@@ -13,9 +13,9 @@ plugin use x509
 ## Usage
 
 ```shell
-# generate self signed crt
+# generate self signed crt with subject alternative names
 ['localhost' '10.1.1.1'] | to x509
-# generate self signed crt with parameters
+# generate self signed crt with other parameters
 ['localhost' '10.10.10.10'] | to x509 -n hello -b 2021-01-01 -e 2055-01-01 -u digital_signature,key_agreement -c 2
 # parse
 open xxx.pem | from x509 | first
