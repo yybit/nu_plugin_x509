@@ -31,7 +31,7 @@ open xxx.pem | from x509 | first
 - `-b`: Specifies the beginning date for the certificate validity period in `YYYY-MM-DD` format. Default is `1975-01-01`.
 - `-e`: Specifies the end date for the certificate validity period in `YYYY-MM-DD` format. Default is `4096-01-01`.
 - `-c`: Specifies the CA constraint (0 for unconstrained, positive integer for constrained). If not specified, the certificate is not a CA certificate.
-- `-u`: Specifies the usage of the certificate, options include:
+- `-u`: Specifies the usage of the certificate, options include (use commas to separate multiple options):
     - `digital_signature`
     - `content_commitment`
     - `key_encipherment`
