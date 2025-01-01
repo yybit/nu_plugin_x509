@@ -19,4 +19,4 @@ x509-parser = "0.16.0"
 chrono = "0.4.39"
 hex = "0.4.3"
 oid-registry = { version = "0.7.1", features = ["crypto"] }
-time = "*"
+time = "0.3.37"
