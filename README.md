@@ -1,3 +1,6 @@
+[![crates.io](https://img.shields.io/crates/v/nu_plugin_x509.svg)](https://crates.io/crates/nu_plugin_x509)
+[![docs.rs](https://docs.rs/nu_plugin_x509/badge.svg)](https://docs.rs/nu_plugin_x509)
+
 # nu_plugin_x509
 
 `nu_plugin_x509` is a Nushell plugin for parsing and generating x509 certificates.
