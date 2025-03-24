@@ -110,12 +110,24 @@ impl ParseCommand {
     fn parse(&self, data: &[u8], span: Span) -> Result<Value, LabeledError> {
         let registry = OidRegistry::default().with_crypto();
 
+        let mut ders = Vec::new();
+        let pems = Pem::iter_from_buffer(data);
+        for pem_result in pems {
+            if let Ok(pem) = pem_result {
+                if let Ok((_, _cert)) = X509Certificate::from_der(&pem.contents) {
+                    ders.push(pem.contents.to_vec());
+                }
+            }
+        }
+        if ders.is_empty() {
+            ders = vec![data.to_vec()]
+        }
+
         let mut output = Vec::new();
-        for pem in Pem::iter_from_buffer(data) {
-            let pem = pem.map_err(|e| LabeledError::new(e.to_string()))?;
-            let crt = pem
-                .parse_x509()
-                .map_err(|e| LabeledError::new(e.to_string()))?;
+        for der in ders {
+            let crt = X509Certificate::from_der(&der)
+                .map_err(|e| LabeledError::new(e.to_string()))?
+                .1;
             let subject_public_key_value = crt
                 .tbs_certificate
                 .subject_pki
