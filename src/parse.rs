@@ -254,6 +254,10 @@ impl nu_plugin::PluginCommand for ParseCommand {
                 let rec = self.parse(val.as_bytes(), internal_span)?;
                 Ok(PipelineData::Value(rec, pipeline_metadata))
             }
+            PipelineData::Value(Value::Binary { val, internal_span }, pipeline_metadata) => {
+                let rec = self.parse(&val, internal_span)?;
+                Ok(PipelineData::Value(rec, pipeline_metadata))
+            }
             v => {
                 return Err(LabeledError::new(format!(
                     "requires binary|string input, got {}",
