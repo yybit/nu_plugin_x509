@@ -1,6 +1,6 @@
 [package]
 name = "nu_plugin_x509"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 authors = ["yybit <yybit2@gmail.com>"]
 license = "Apache-2.0"
@@ -12,8 +12,8 @@ include = ["**/*.rs", "Cargo.toml"]
 keywords = ["nu", "plugin", "x509"]
 
 [dependencies]
-nu-plugin = "0.104.1"
-nu-protocol = { version = "0.104.1", features = ["plugin"] }
+nu-plugin = "0.105.1"
+nu-protocol = { version = "0.105.1", features = ["plugin"] }
 rcgen = "0.13.2"
 x509-parser = "0.17.0"
 chrono = "0.4.41"
