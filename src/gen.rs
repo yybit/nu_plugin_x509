@@ -12,7 +12,7 @@ impl GenCommand {
         let record = Value::record(
             record!(
                 "crt" => Value::string(crt.cert.pem(), span),
-                "key" => Value::string(crt.key_pair.serialize_pem(), span),
+                "key" => Value::string(crt.signing_key.serialize_pem(), span),
             ),
             span,
         );
@@ -21,10 +21,13 @@ impl GenCommand {
 
     pub fn generate_self_signed(
         params: rcgen::CertificateParams,
-    ) -> Result<rcgen::CertifiedKey, rcgen::Error> {
+    ) -> Result<rcgen::CertifiedKey<rcgen::KeyPair>, rcgen::Error> {
         let key_pair = rcgen::KeyPair::generate()?;
         let cert = params.self_signed(&key_pair)?;
-        Ok(rcgen::CertifiedKey { cert, key_pair })
+        Ok(rcgen::CertifiedKey {
+            cert,
+            signing_key: key_pair,
+        })
     }
 }
 

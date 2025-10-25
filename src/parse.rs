@@ -46,28 +46,26 @@ impl ParseCommand {
                         "time_stamping" => Value::bool(eku.time_stamping, span),
                         "ocscp_signing" => Value::bool(eku.ocsp_signing, span),
                         "any" => Value::bool(eku.any, span),
-                        "other" => Value::List {
-                            vals: eku
-                                .other
+                        "other" => Value::list(
+                            eku.other
                                 .iter()
                                 .map(|oid| Value::string(oid.to_string(), span))
                                 .collect(),
-                            internal_span: span,
-                        }
+                            span,
+                        )
                     ),
                     span,
                 ),
                 "ExtendedKeyUsage",
             ),
             ParsedExtension::SubjectAlternativeName(san) => (
-                Value::List {
-                    vals: san
-                        .general_names
+                Value::list(
+                    san.general_names
                         .iter()
                         .map(|gn| Value::string(format!("{:?}", gn), span))
                         .collect(),
-                    internal_span: span,
-                },
+                    span,
+                ),
                 "SubjectAlternativeName",
             ),
             ParsedExtension::AuthorityKeyIdentifier(aki) => (
@@ -80,14 +78,13 @@ impl ParseCommand {
                                 .unwrap_or_default(),
                             span
                         ),
-                        "authority_cert_issuer" => Value::List {
-                            vals: aki
-                                .authority_cert_issuer
+                        "authority_cert_issuer" => Value::list(
+                            aki.authority_cert_issuer
                                 .iter()
                                 .map(|gn| Value::string(format!("{:?}", gn), span))
                                 .collect(),
-                            internal_span: span,
-                        },
+                            span,
+                        ),
                         "authority_cert_serial" => Value::string(
                             aki.authority_cert_serial
                                 .map(|serial| hex::encode(serial.as_ref()))
@@ -169,9 +166,8 @@ impl ParseCommand {
                     ),
                     "subject_public_key_value" => Value::string(subject_public_key_value, span),
                 ), span),
-                "extensions" => Value::List {
-                    vals: crt
-                        .tbs_certificate
+                "extensions" => Value::list(
+                    crt.tbs_certificate
                         .extensions()
                         .iter()
                         .map(|ext| {
@@ -187,8 +183,8 @@ impl ParseCommand {
                             ), span)
                         })
                         .collect(),
-                    internal_span: span,
-                },
+                    span,
+                ),
                 "signature_algorithm" => Value::string(
                     registry.get(crt.signature_algorithm.oid())
                         .map(|oid_entry| oid_entry.sn())
@@ -202,10 +198,7 @@ impl ParseCommand {
             );
             output.push(Value::record(rec, span));
         }
-        Ok(Value::List {
-            vals: output,
-            internal_span: span,
-        })
+        Ok(Value::list(output, span))
     }
 }
 
@@ -250,11 +243,21 @@ impl nu_plugin::PluginCommand for ParseCommand {
                 )?;
                 Ok(PipelineData::Value(rec, pipeline_metadata))
             }
-            PipelineData::Value(Value::String { val, internal_span }, pipeline_metadata) => {
+            PipelineData::Value(
+                Value::String {
+                    val, internal_span, ..
+                },
+                pipeline_metadata,
+            ) => {
                 let rec = self.parse(val.as_bytes(), internal_span)?;
                 Ok(PipelineData::Value(rec, pipeline_metadata))
             }
-            PipelineData::Value(Value::Binary { val, internal_span }, pipeline_metadata) => {
+            PipelineData::Value(
+                Value::Binary {
+                    val, internal_span, ..
+                },
+                pipeline_metadata,
+            ) => {
                 let rec = self.parse(&val, internal_span)?;
                 Ok(PipelineData::Value(rec, pipeline_metadata))
             }
